@@ -105,11 +105,21 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: var(--border-neon);
-            border-radius: 16px;
             overflow: hidden;
             margin-bottom: 30px;
             display: flex;
             flex-wrap: wrap;
+            /* CLIPPED CORNER: kiri atas + kanan bawah */
+            clip-path: polygon(
+                12px 0%,
+                100% 0%,
+                100% 0%,
+                100% calc(100% - 12px),
+                calc(100% - 12px) 100%,
+                0% 100%,
+                0% 100%,
+                0% 12px
+            );
         }
         .detail-banner .poster {
             flex: 0 0 220px;
@@ -135,12 +145,22 @@
             background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
             color: #fff;
             padding: 2px 14px;
-            border-radius: 50px;
             font-size: 11px;
             font-weight: 600;
             margin-bottom: 10px;
             font-family: 'Orbitron', sans-serif;
             letter-spacing: 1px;
+            /* CLIPPED CORNER: kiri atas + kanan bawah */
+            clip-path: polygon(
+                6px 0%,
+                100% 0%,
+                100% 0%,
+                100% calc(100% - 6px),
+                calc(100% - 6px) 100%,
+                0% 100%,
+                0% 100%,
+                0% 6px
+            );
         }
         .detail-banner .desc .genres {
             display: flex;
@@ -152,9 +172,19 @@
             background: rgba(255,255,255,0.05);
             border: var(--border-neon);
             padding: 4px 14px;
-            border-radius: 50px;
             font-size: 11px;
             color: var(--text-secondary);
+            /* CLIPPED CORNER: kiri atas + kanan bawah */
+            clip-path: polygon(
+                6px 0%,
+                100% 0%,
+                100% 0%,
+                100% calc(100% - 6px),
+                calc(100% - 6px) 100%,
+                0% 100%,
+                0% 100%,
+                0% 6px
+            );
         }
         .detail-banner .desc .genres span:hover {
             border-color: var(--neon-purple);
@@ -193,7 +223,6 @@
             background: var(--bg-card);
             backdrop-filter: blur(10px);
             border: var(--border-neon);
-            border-radius: 12px;
             padding: 14px 10px;
             text-align: center;
             font-size: 13px;
@@ -201,6 +230,17 @@
             color: var(--text-primary);
             cursor: pointer;
             transition: 0.3s;
+            /* CLIPPED CORNER: kiri atas + kanan bawah */
+            clip-path: polygon(
+                8px 0%,
+                100% 0%,
+                100% 0%,
+                100% calc(100% - 8px),
+                calc(100% - 8px) 100%,
+                0% 100%,
+                0% 100%,
+                0% 8px
+            );
         }
         .episode-btn:hover {
             background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
@@ -294,7 +334,7 @@
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>Data anime tidak ditemukan.</p>
-                        <button onclick="location.href='../index.html'" style="margin-top:15px;padding:10px 25px;background:var(--neon-purple);border:none;border-radius:50px;color:#fff;cursor:pointer;">
+                        <button onclick="location.href='../index.html'" style="margin-top:15px;padding:10px 25px;background:var(--neon-purple);border:none;cursor:pointer;color:#fff;font-weight:600;font-size:14px;font-family:'Inter',sans-serif;clip-path:polygon(8px 0%,100% 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 100%,0% 8px);">
                             Kembali ke Home
                         </button>
                     </div>
