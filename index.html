@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <!-- ==================== HEADER ==================== -->
+    <!-- HEADER -->
     <header>
         <div class="header-top">
             <div class="logo">
@@ -25,12 +25,12 @@
             <a href="#" class="active" onclick="goHome()"><i class="fas fa-home"></i> Home</a>
             <a href="#" onclick="filterByGenre('all')"><i class="fas fa-fire"></i> Trending</a>
             <a href="#" onclick="filterByGenre('donghua')"><i class="fas fa-dragon"></i> Donghua</a>
-            <a href="#" onclick="document.querySelector('.genre-filter').scrollIntoView({behavior:'smooth'})"><i class="fas fa-tags"></i> Genre</a>
+            <a href="#" onclick="document.getElementById('genreFilter').scrollIntoView({behavior:'smooth'})"><i class="fas fa-tags"></i> Genre</a>
             <a href="#" onclick="alert('Jadwal rilis akan segera hadir!')"><i class="fas fa-calendar-alt"></i> Jadwal</a>
         </nav>
     </header>
 
-    <!-- ==================== HERO BANNER ==================== -->
+    <!-- HERO BANNER -->
     <div class="hero-banner">
         <div class="hero-content">
             <div class="hero-tag">✦ NOW STREAMING</div>
@@ -48,13 +48,11 @@
         <div class="hero-glow"></div>
     </div>
 
-    <!-- ==================== KONTEN ==================== -->
+    <!-- KONTEN -->
     <div class="container">
 
-        <!-- ==================== HALAMAN HOME ==================== -->
         <div id="page-home" class="page active">
 
-            <!-- SECTION TITLE -->
             <div class="section-header">
                 <div class="section-title">
                     <i class="fas fa-fire"></i> Trending Sekarang
@@ -67,8 +65,18 @@
                 </div>
             </div>
 
-            <!-- GENRE FILTER -->
-            <div class="genre-filter">
+            <!-- ★ GRID ANIME ★ -->
+            <div id="animeGrid" class="anime-grid"></div>
+
+            <!-- ★ PAGINATION ★ -->
+            <div class="pagination">
+                <button id="prevPageBtn" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
+                <span id="pageInfo">Halaman 1 dari 1</span>
+                <button id="nextPageBtn" onclick="changePage(1)">Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <!-- ★ GENRE FILTER (DIPINDAH KE BAWAH PAGINATION) ★ -->
+            <div class="genre-filter" id="genreFilter">
                 <button class="genre-btn active" data-genre="all" onclick="filterByGenre('all')">Semua</button>
                 <button class="genre-btn" data-genre="action" onclick="filterByGenre('action')">Action</button>
                 <button class="genre-btn" data-genre="adventure" onclick="filterByGenre('adventure')">Adventure</button>
@@ -84,25 +92,15 @@
                 <button class="genre-btn" data-genre="cultivation" onclick="filterByGenre('cultivation')">Cultivation</button>
             </div>
 
-            <!-- GRID ANIME -->
-            <div id="animeGrid" class="anime-grid"></div>
-
-            <!-- PAGINATION -->
-            <div class="pagination">
-                <button id="prevPageBtn" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
-                <span id="pageInfo">Halaman 1 dari 1</span>
-                <button id="nextPageBtn" onclick="changePage(1)">Next <i class="fas fa-chevron-right"></i></button>
-            </div>
         </div>
 
-        <!-- LOADING -->
         <div id="globalLoader" class="loader" style="display:none;">
             <i class="fas fa-spinner"></i>
         </div>
 
     </div>
 
-    <!-- ==================== FOOTER ==================== -->
+    <!-- FOOTER -->
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
