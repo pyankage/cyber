@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeStream - Detail</title>
+    <title>Naruto - Detail</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
     <style>
@@ -30,7 +30,6 @@
             min-height: 100vh;
         }
 
-        /* HEADER */
         header {
             background: rgba(10, 10, 15, 0.8);
             backdrop-filter: blur(20px);
@@ -81,7 +80,6 @@
         }
         .nav-links a:hover { color: var(--neon-purple); }
 
-        /* BREADCRUMB */
         .breadcrumb {
             display: flex;
             align-items: center;
@@ -100,7 +98,6 @@
         .breadcrumb i { font-size: 10px; color: rgba(255,255,255,0.1); }
         .breadcrumb span { color: var(--text-primary); font-weight: 600; }
 
-        /* KONTEN */
         .container { max-width: 1100px; margin: 0 auto; padding: 20px 30px 30px; }
 
         .detail-banner {
@@ -264,43 +261,14 @@
 
     <div class="container">
 
-        <!-- ★ BREADCRUMB NAVIGASI (TANPA TOMBOL KEMBALI) ★ -->
         <div class="breadcrumb">
             <a href="#" onclick="location.href='../index.html'">Home</a>
             <i class="fas fa-chevron-right"></i>
-            <span>JUDUL_ANIME</span>
+            <span id="breadcrumbTitle">Loading...</span>
         </div>
 
-        <div class="detail-banner">
-            <div class="poster">
-                <img src="URL_GAMBAR" alt="JUDUL_ANIME" onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
-            </div>
-            <div class="desc">
-                <h1>JUDUL_ANIME</h1>
-                <span class="status">Ongoing</span>
-                <div class="genres">
-                    <span>Genre1</span>
-                    <span>Genre2</span>
-                    <span>Genre3</span>
-                </div>
-                <p>SINOPSIS ANIME</p>
-                <div class="meta-info">
-                    <span><i class="fas fa-calendar-alt"></i> Updated: 4/9/2026</span>
-                    <span><i class="fas fa-list-ul"></i> Total Episode: 1</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="episode-section">
-            <h2><i class="fas fa-list-ul"></i> Daftar Episode</h2>
-            <div class="episode-list">
-                <!-- ★ COPY-PASTE INI UNTUK SETIAP EPISODE ★ -->
-                <div class="episode-btn" onclick="location.href='../watch.html?anime=NAMA_FOLDER&ep=1&url=LINK_EMBED'">
-                    <span class="ep-num">EP 1</span>
-                    <span class="ep-title">Judul Episode</span>
-                </div>
-                <!-- ★ TAMBAH EPISODE LAIN DI SINI ★ -->
-            </div>
+        <div id="detailContent">
+            <div class="loader"><i class="fas fa-spinner"></i></div>
         </div>
 
         <div class="footer">
@@ -309,6 +277,97 @@
 
     </div>
 
-    <script src="../script.js"></script>
+    <script>
+        // ============================================================
+        //  ★ LOAD DETAIL DARI LOCALSTORAGE ★
+        // ============================================================
+        function loadDetail() {
+            const container = document.getElementById('detailContent');
+            const breadcrumbTitle = document.getElementById('breadcrumbTitle');
+
+            console.log('🔍 Loading detail...');
+
+            // Ambil data dari localStorage
+            const animeData = localStorage.getItem('currentAnime');
+            const episodesData = localStorage.getItem('currentEpisodes');
+
+            console.log('📦 Anime data:', animeData);
+            console.log('📦 Episodes data:', episodesData);
+
+            if (!animeData) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Data anime tidak ditemukan.</p>
+                        <p style="font-size:12px; margin-top:8px; color:#8892b0;">
+                            Silakan kembali ke Home dan klik kartu anime.
+                        </p>
+                        <button onclick="location.href='../index.html'" style="margin-top:15px;padding:10px 25px;background:var(--neon-purple);border:none;border-radius:50px;color:#fff;cursor:pointer;">
+                            Kembali ke Home
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const anime = JSON.parse(animeData);
+            const episodes = episodesData ? JSON.parse(episodesData) : [];
+
+            console.log('📺 Anime:', anime.title);
+            console.log('📺 Episodes:', episodes.length);
+
+            // Update breadcrumb
+            breadcrumbTitle.textContent = anime.title;
+
+            // Render genres
+            const genres = anime.genre ? anime.genre.split(',').map(g => `<span>${g.trim()}</span>`).join('') : '';
+
+            // Render episode buttons
+            let episodeButtons = '';
+            if (episodes.length > 0) {
+                episodeButtons = episodes.map(ep => `
+                    <div class="episode-btn" onclick="location.href='../watch.html?anime=${anime.id}&ep=${ep.number}&url=${ep.url}'">
+                        <span class="ep-num">EP ${ep.number}</span>
+                        <span class="ep-title">${anime.title} Episode ${ep.number}</span>
+                    </div>
+                `).join('');
+            } else {
+                episodeButtons = `<div class="empty-state"><p>Belum ada episode.</p></div>`;
+            }
+
+            container.innerHTML = `
+                <div class="detail-banner">
+                    <div class="poster">
+                        <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" 
+                             alt="${anime.title}" 
+                             onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
+                    </div>
+                    <div class="desc">
+                        <h1>${anime.title}</h1>
+                        <span class="status">Ongoing</span>
+                        <div class="genres">${genres}</div>
+                        <p>${anime.synopsis || 'Tidak ada sinopsis.'}</p>
+                        <div class="meta-info">
+                            <span><i class="fas fa-calendar-alt"></i> Updated: ${anime.date || new Date().toLocaleDateString('id-ID')}</span>
+                            <span><i class="fas fa-list-ul"></i> Total Episode: ${episodes.length}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="episode-section">
+                    <h2><i class="fas fa-list-ul"></i> Daftar Episode</h2>
+                    <div class="episode-list">${episodeButtons}</div>
+                </div>
+            `;
+        }
+
+        // ============================================================
+        //  ★ INISIALISASI ★
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', loadDetail);
+
+        console.log('📊 Detail page loaded.');
+        console.log('💡 Data dari localStorage.');
+    </script>
+
 </body>
 </html>
