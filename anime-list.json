@@ -1,0 +1,12 @@
+{
+    "anime": [
+        {
+            "id": "naruto",
+            "title": "Naruto",
+            "image": "https://via.placeholder.com/300x400/ff9f43/fff?text=Naruto",
+            "genre": "Action, Adventure, Shonen",
+            "date": "2026-09-04"
+        },
+        {
+            "id": "tsuihou-sareta",
+           
