@@ -87,8 +87,7 @@ async function loadFromSpreadsheet() {
 }
 
 // ============================================================
-// ============================================================
-//  ★ RENDER ANIME LIST ★
+//  ★ RENDER ANIME LIST (SEMUA GENRE MUNCUL) ★
 // ============================================================
 function renderAnimeList(animeList, genre = 'all', page = 1) {
     const grid = document.getElementById('animeGrid');
@@ -130,6 +129,7 @@ function renderAnimeList(animeList, genre = 'all', page = 1) {
                  onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
             <div class="info">
                 <h3>${anime.title || 'No Title'}</h3>
+                <!-- ★ SEMUA GENRE MUNCUL ★ -->
                 <p>${anime.genre ? anime.genre.replace(/,\s*/g, ', ') : 'Anime'}</p>
             </div>
         </div>
@@ -221,7 +221,7 @@ async function searchAnime() {
                  onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
             <div class="info">
                 <h3>${anime.title || 'No Title'}</h3>
-                <p>${anime.genre || 'Anime'}</p>
+                <p>${anime.genre ? anime.genre.replace(/,\s*/g, ', ') : 'Anime'}</p>
             </div>
         </div>
     `).join('');
@@ -242,3 +242,4 @@ document.addEventListener('DOMContentLoaded', () => {
 console.log('🚀 AnimeStream dengan Google Spreadsheet siap!');
 console.log('📊 Data otomatis dari spreadsheet.');
 console.log('💡 Edit spreadsheet, refresh website, data langsung berubah!');
+console.log('🎯 Semua genre muncul di Home & Detail!');
