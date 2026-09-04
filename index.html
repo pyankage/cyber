@@ -3,158 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeStream - Cyberpunk</title>
+    <title>Tombol Sudut Terpotong</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- Reset dasar & tema --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        /* --- Gaya tombol "clipped corner" --- */
+        .btn-clipped {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            /* Warna dasar */
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+
+            /* Ukuran font & tebal */
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+
+            /* Clipped corner utama pakai clip-path */
+            clip-path: polygon(
+                12px 0%,            /* kiri atas miring */
+                100% 0%,            /* kanan atas */
+                100% calc(100% - 12px), /* kanan bawah miring */
+                calc(100% - 12px) 100%, /* bawah kanan miring */
+                0% 100%,            /* kiri bawah */
+                0% 12px             /* kiri atas miring (kembali) */
+            );
+
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.25);
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            min-width: 120px;
+        }
+
+        /* Hover efek */
+        .btn-clipped:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.45);
+            filter: brightness(1.08);
+        }
+
+        /* Tombol dengan border (outline) */
+        .btn-clipped-outline {
+            background: transparent;
+            color: #f1f3f5;
+            border: 2px solid rgba(168, 85, 247, 0.5);
+            box-shadow: none;
+            clip-path: polygon(
+                12px 0%,
+                100% 0%,
+                100% calc(100% - 12px),
+                calc(100% - 12px) 100%,
+                0% 100%,
+                0% 12px
+            );
+        }
+
+        .btn-clipped-outline:hover {
+            background: rgba(168, 85, 247, 0.12);
+            border-color: #a855f7;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Tombol ukuran kecil */
+        .btn-clipped-sm {
+            padding: 6px 16px;
+            font-size: 12px;
+            min-width: 80px;
+            clip-path: polygon(
+                8px 0%,
+                100% 0%,
+                100% calc(100% - 8px),
+                calc(100% - 8px) 100%,
+                0% 100%,
+                0% 8px
+            );
+        }
+
+        /* Tombol ukuran besar */
+        .btn-clipped-lg {
+            padding: 16px 40px;
+            font-size: 18px;
+            min-width: 180px;
+            clip-path: polygon(
+                16px 0%,
+                100% 0%,
+                100% calc(100% - 16px),
+                calc(100% - 16px) 100%,
+                0% 100%,
+                0% 16px
+            );
+        }
+
+        /* ----- VARIAN: kotak dengan clipped corner di semua sisi (lebih ekstrim) ----- */
+        .btn-clipped-box {
+            clip-path: polygon(
+                12px 0%,
+                calc(100% - 12px) 0%,
+                100% 12px,
+                100% calc(100% - 12px),
+                calc(100% - 12px) 100%,
+                12px 100%,
+                0% calc(100% - 12px),
+                0% 12px
+            );
+            background: #1e1b2e;
+            border: 2px solid #a855f7;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+        }
+
+        .btn-clipped-box:hover {
+            background: #2a2440;
+            border-color: #ec4899;
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.2);
+        }
+
+        /* --- Container demo --- */
+        .demo-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 30px 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(168, 85, 247, 0.12);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .demo-label {
+            color: #8892b0;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 8px;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            .demo-section {
+                padding: 20px 16px;
+                gap: 14px;
+            }
+            .btn-clipped-lg {
+                padding: 14px 28px;
+                font-size: 16px;
+                min-width: 140px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header>
-        <div class="header-top">
-            <div class="logo">
-                <span class="neon">A</span><span>nime</span><span class="neon">S</span><span>tream</span>
-                <span class="cyber-badge">✦ BETA</span>
-            </div>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Cari anime..." onkeydown="if(event.key==='Enter') searchAnime()">
-                <button onclick="searchAnime()"><i class="fas fa-search"></i></button>
-            </div>
-        </div>
-        <nav class="main-nav" id="mainNav">
-            <a href="#" class="active" onclick="goHome()"><i class="fas fa-home"></i> Home</a>
-            <a href="#" onclick="filterByGenre('all')"><i class="fas fa-fire"></i> Trending</a>
-            <a href="#" onclick="filterByGenre('donghua')"><i class="fas fa-dragon"></i> Donghua</a>
-            <a href="#" onclick="document.getElementById('genreFilter').scrollIntoView({behavior:'smooth'})"><i class="fas fa-tags"></i> Genre</a>
-            <a href="#" onclick="alert('Jadwal rilis akan segera hadir!')"><i class="fas fa-calendar-alt"></i> Jadwal</a>
-        </nav>
-    </header>
+    <!-- === DEMO 1: TOMBOL CLIPPED CORNER (UKURAN VARIATIF) === -->
+    <div class="demo-section">
+        <div class="demo-label">✦ Clipped Corner — varian ukuran</div>
 
-    <!-- HERO BANNER -->
-    <div class="hero-banner">
-        <div class="hero-content">
-            <div class="hero-tag">✦ NOW STREAMING</div>
-            <h1 class="hero-title">Cyber<span class="neon">Anime</span></h1>
-            <p class="hero-desc">Nikmati ribuan anime & donghua favoritmu dengan kualitas terbaik. Streaming gratis, kapan saja, di mana saja.</p>
-            <div class="hero-buttons">
-                <button class="btn-primary" onclick="document.querySelector('.section-title').scrollIntoView({behavior:'smooth'})">
-                    <i class="fas fa-play"></i> Mulai Nonton
-                </button>
-                <button class="btn-secondary" onclick="filterByGenre('all')">
-                    <i class="fas fa-list"></i> Lihat Semua
-                </button>
-            </div>
-        </div>
-        <div class="hero-glow"></div>
+        <!-- Kecil -->
+        <button class="btn-clipped btn-clipped-sm">
+            <i class="fas fa-play"></i> Kecil
+        </button>
+
+        <!-- Sedang (default) -->
+        <button class="btn-clipped">
+            <i class="fas fa-play"></i> Sedang
+        </button>
+
+        <!-- Besar -->
+        <button class="btn-clipped btn-clipped-lg">
+            <i class="fas fa-play"></i> Besar
+        </button>
+
+        <!-- Outline -->
+        <button class="btn-clipped btn-clipped-outline">
+            <i class="fas fa-list"></i> Outline
+        </button>
+
+        <!-- Box (clipped di semua sudut) -->
+        <button class="btn-clipped btn-clipped-box">
+            <i class="fas fa-cube"></i> Box
+        </button>
     </div>
 
-    <!-- KONTEN -->
-    <div class="container">
+    <!-- === DEMO 2: TOMBOL CLIPPED CORNER UNTUK KOTAK / ELEMEN BESAR === -->
+    <div class="demo-section" style="flex-direction: column; align-items: stretch; gap: 18px;">
+        <div class="demo-label">✦ Elemen besar dengan sudut terpotong</div>
 
-        <div id="page-home" class="page active">
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;">
+            <!-- Tombol besar dengan icon -->
+            <button class="btn-clipped btn-clipped-lg" style="min-width: 200px;">
+                <i class="fas fa-dragon"></i> Mulai Nonton
+            </button>
 
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fas fa-fire"></i> Trending Sekarang
-                    <span class="section-badge">HOT</span>
-                </div>
-                <div class="section-nav">
-                    <button class="nav-dot active"></button>
-                    <button class="nav-dot"></button>
-                    <button class="nav-dot"></button>
-                </div>
-            </div>
-
-            <!-- GRID ANIME -->
-            <div id="animeGrid" class="anime-grid"></div>
-
-            <!-- PAGINATION -->
-            <div class="pagination">
-                <button id="prevPageBtn" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
-                <span id="pageInfo">Halaman 1 dari 1</span>
-                <button id="nextPageBtn" onclick="changePage(1)">Next <i class="fas fa-chevron-right"></i></button>
-            </div>
-
-            <!-- ★ GENRE FILTER LENGKAP (28 GENRE) ★ -->
-            <div class="genre-filter" id="genreFilter">
-                <button class="genre-btn active" data-genre="all" onclick="filterByGenre('all')">Semua</button>
-                
-                <!-- Action / Petualangan -->
-                <button class="genre-btn" data-genre="action" onclick="filterByGenre('action')">Action</button>
-                <button class="genre-btn" data-genre="adventure" onclick="filterByGenre('adventure')">Adventure</button>
-                <button class="genre-btn" data-genre="fantasy" onclick="filterByGenre('fantasy')">Fantasy</button>
-                
-                <!-- Komedi / Slice of Life -->
-                <button class="genre-btn" data-genre="comedy" onclick="filterByGenre('comedy')">Comedy</button>
-                <button class="genre-btn" data-genre="slice-of-life" onclick="filterByGenre('slice-of-life')">Slice of Life</button>
-                
-                <!-- Romansa / Drama -->
-                <button class="genre-btn" data-genre="romance" onclick="filterByGenre('romance')">Romance</button>
-                <button class="genre-btn" data-genre="drama" onclick="filterByGenre('drama')">Drama</button>
-                
-                <!-- Dark / Misteri -->
-                <button class="genre-btn" data-genre="dark-fantasy" onclick="filterByGenre('dark-fantasy')">Dark Fantasy</button>
-                <button class="genre-btn" data-genre="mystery" onclick="filterByGenre('mystery')">Mystery</button>
-                <button class="genre-btn" data-genre="thriller" onclick="filterByGenre('thriller')">Thriller</button>
-                <button class="genre-btn" data-genre="horror" onclick="filterByGenre('horror')">Horror</button>
-                <button class="genre-btn" data-genre="psychological" onclick="filterByGenre('psychological')">Psychological</button>
-                
-                <!-- Demografi -->
-                <button class="genre-btn" data-genre="shonen" onclick="filterByGenre('shonen')">Shonen</button>
-                <button class="genre-btn" data-genre="shoujo" onclick="filterByGenre('shoujo')">Shoujo</button>
-                <button class="genre-btn" data-genre="seinen" onclick="filterByGenre('seinen')">Seinen</button>
-                <button class="genre-btn" data-genre="josei" onclick="filterByGenre('josei')">Josei</button>
-                
-                <!-- Sub-Genre Populer -->
-                <button class="genre-btn" data-genre="isekai" onclick="filterByGenre('isekai')">Isekai</button>
-                <button class="genre-btn" data-genre="mecha" onclick="filterByGenre('mecha')">Mecha</button>
-                <button class="genre-btn" data-genre="sports" onclick="filterByGenre('sports')">Sports</button>
-                <button class="genre-btn" data-genre="school" onclick="filterByGenre('school')">School</button>
-                <button class="genre-btn" data-genre="supernatural" onclick="filterByGenre('supernatural')">Supernatural</button>
-                <button class="genre-btn" data-genre="sci-fi" onclick="filterByGenre('sci-fi')">Sci-Fi</button>
-                
-                <!-- Donghua Khas -->
-                <button class="genre-btn" data-genre="donghua" onclick="filterByGenre('donghua')">Donghua</button>
-                <button class="genre-btn" data-genre="cultivation" onclick="filterByGenre('cultivation')">Cultivation</button>
-                <button class="genre-btn" data-genre="wuxia" onclick="filterByGenre('wuxia')">Wuxia</button>
-                <button class="genre-btn" data-genre="xianxia" onclick="filterByGenre('xianxia')">Xianxia</button>
-                <button class="genre-btn" data-genre="historical" onclick="filterByGenre('historical')">Historical</button>
-                <button class="genre-btn" data-genre="martial-arts" onclick="filterByGenre('martial-arts')">Martial Arts</button>
-            </div>
-
+            <!-- Tombol besar outline -->
+            <button class="btn-clipped btn-clipped-lg btn-clipped-outline" style="min-width: 200px;">
+                <i class="fas fa-fire"></i> Trending
+            </button>
         </div>
 
-        <div id="globalLoader" class="loader" style="display:none;">
-            <i class="fas fa-spinner"></i>
+        <!-- Sebuah "card" / kotak besar dengan sudut terpotong (bukan tombol, tapi elemen) -->
+        <div style="
+            clip-path: polygon(
+                16px 0%,
+                calc(100% - 16px) 0%,
+                100% 16px,
+                100% calc(100% - 16px),
+                calc(100% - 16px) 100%,
+                16px 100%,
+                0% calc(100% - 16px),
+                0% 16px
+            );
+            background: rgba(168, 85, 247, 0.06);
+            border: 1.5px solid rgba(168, 85, 247, 0.2);
+            padding: 24px 28px;
+            color: #f1f3f5;
+            text-align: center;
+            backdrop-filter: blur(6px);
+            transition: 0.3s;
+        ">
+            <p style="font-size: 16px; font-weight: 500;">
+                <i class="fas fa-tv" style="color: #a855f7; margin-right: 10px;"></i>
+                Ini adalah <strong style="color: #a855f7;">kotak besar</strong> dengan sudut terpotong
+            </p>
+            <p style="color: #8892b0; font-size: 14px; margin-top: 6px;">
+                Bisa dipakai untuk card, banner, atau panel apapun.
+            </p>
         </div>
-
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo">
-                <span class="neon">A</span>nime<span class="neon">S</span>tream
-                <span class="cyber-badge">✦ 2026</span>
-            </div>
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Privacy</a>
-                <a href="#">Contact</a>
-                <a href="#">DMCA</a>
-            </div>
-            <div class="footer-social">
-                <a href="#"><i class="fab fa-discord"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 AnimeStream — Made with <i class="fas fa-heart neon"></i> for anime lovers</p>
-        </div>
-    </footer>
+    <!-- === DEMO 3: SEMUA TOMBOL DI ATAS BISA DIKLIK === -->
+    <div style="color: #8892b0; font-size: 12px; text-align: center; max-width: 500px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 18px;">
+        <i class="fas fa-chevron-circle-right" style="color: #a855f7;"></i>
+        Semua tombol di atas menggunakan <code style="background: rgba(255,255,255,0.04); padding: 2px 8px; border-radius: 4px;">clip-path</code> untuk sudut terpotong.
+        Ukuran <strong>kecil</strong>, <strong>sedang</strong>, <strong>besar</strong>, <strong>outline</strong>, dan <strong>box</strong>.
+    </div>
 
-    <script src="script.js"></script>
 </body>
 </html>
