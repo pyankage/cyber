@@ -1,6 +1,5 @@
 // ============================================================
 //  ★ KONFIGURASI SPREADSHEET ★
-//  Ganti ID dengan spreadsheet-mu
 // ============================================================
 
 // ★ GANTI DENGAN ID SPREADSHEET ANIME ★
@@ -51,13 +50,11 @@ async function loadFromSpreadsheet() {
     grid.innerHTML = `<div class="loader"><i class="fas fa-spinner"></i></div>`;
 
     try {
-        // Load anime
         const animeRes = await fetch(ANIME_URL);
         if (!animeRes.ok) throw new Error('Gagal load anime');
         const animeCSV = await animeRes.text();
         allAnimeData = parseCSV(animeCSV);
 
-        // Load episodes
         const epRes = await fetch(EPISODES_URL);
         if (!epRes.ok) throw new Error('Gagal load episodes');
         const epCSV = await epRes.text();
@@ -66,11 +63,9 @@ async function loadFromSpreadsheet() {
         console.log('📊 Anime loaded:', allAnimeData.length);
         console.log('📊 Episodes loaded:', allEpisodesData.length);
 
-        // Simpan ke localStorage
         localStorage.setItem('allAnime', JSON.stringify(allAnimeData));
         localStorage.setItem('allEpisodes', JSON.stringify(allEpisodesData));
 
-        // Render halaman
         renderAnimeList(allAnimeData, 'all', 1);
     } catch (error) {
         console.error('Error loading from spreadsheet:', error);
@@ -87,18 +82,15 @@ async function loadFromSpreadsheet() {
 }
 
 // ============================================================
-//  ★ RENDER ANIME LIST (SEMUA GENRE MUNCUL) ★
+//  ★ RENDER ANIME LIST (GENRE PAKAI SPLIT) ★
 // ============================================================
 function renderAnimeList(animeList, genre = 'all', page = 1) {
     const grid = document.getElementById('animeGrid');
     if (!grid) return;
 
     let filteredList = [...animeList];
-
-    // Sortir dari yang terbaru
     filteredList.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // Filter genre
     if (genre !== 'all') {
         filteredList = filteredList.filter(anime => {
             const genres = anime.genre ? anime.genre.toLowerCase().split(/[,;]\s*/) : [];
@@ -106,7 +98,6 @@ function renderAnimeList(animeList, genre = 'all', page = 1) {
         });
     }
 
-    // Pagination
     totalPages = Math.ceil(filteredList.length / itemsPerPage) || 1;
     if (page > totalPages) page = totalPages;
     if (page < 1) page = 1;
@@ -122,18 +113,22 @@ function renderAnimeList(animeList, genre = 'all', page = 1) {
         return;
     }
 
-    grid.innerHTML = pageItems.map(anime => `
-        <div class="anime-card" onclick="openAnime('${anime.id}')">
-            <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" 
-                 alt="${anime.title || 'No Title'}" 
-                 onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
-            <div class="info">
-                <h3>${anime.title || 'No Title'}</h3>
-                <!-- ★ SEMUA GENRE MUNCUL ★ -->
-                <p>${anime.genre ? anime.genre.replace(/,\s*/g, ', ') : 'Anime'}</p>
+    grid.innerHTML = pageItems.map(anime => {
+        // ★ FORMAT GENRE DENGAN SPLIT ★
+        const genreDisplay = anime.genre ? anime.genre.split(',').map(g => g.trim()).join(', ') : 'Anime';
+        
+        return `
+            <div class="anime-card" onclick="openAnime('${anime.id}')">
+                <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" 
+                     alt="${anime.title || 'No Title'}" 
+                     onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
+                <div class="info">
+                    <h3>${anime.title || 'No Title'}</h3>
+                    <p>${genreDisplay}</p>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     updatePaginationButtons();
 }
@@ -142,24 +137,20 @@ function renderAnimeList(animeList, genre = 'all', page = 1) {
 //  ★ OPEN ANIME ★
 // ============================================================
 function openAnime(animeId) {
-    // Cari anime dari data yang sudah di-load
     const anime = allAnimeData.find(a => a.id === animeId);
     if (!anime) {
         alert('Anime tidak ditemukan!');
         return;
     }
 
-    // Cari episode untuk anime ini
     const episodes = allEpisodesData.filter(ep => ep.anime_id === animeId);
 
-    // Simpan ke localStorage
     localStorage.setItem('currentAnime', JSON.stringify(anime));
     localStorage.setItem('currentEpisodes', JSON.stringify(episodes));
 
     console.log('📤 Opening anime:', anime.title);
     console.log('📤 Episodes:', episodes.length);
 
-    // Arahkan ke halaman detail
     location.href = `${animeId}/info.html`;
 }
 
@@ -214,17 +205,20 @@ async function searchAnime() {
         return;
     }
 
-    grid.innerHTML = results.map(anime => `
-        <div class="anime-card" onclick="openAnime('${anime.id}')">
-            <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" 
-                 alt="${anime.title || 'No Title'}" 
-                 onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
-            <div class="info">
-                <h3>${anime.title || 'No Title'}</h3>
-                <p>${anime.genre ? anime.genre.replace(/,\s*/g, ', ') : 'Anime'}</p>
+    grid.innerHTML = results.map(anime => {
+        const genreDisplay = anime.genre ? anime.genre.split(',').map(g => g.trim()).join(', ') : 'Anime';
+        return `
+            <div class="anime-card" onclick="openAnime('${anime.id}')">
+                <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" 
+                     alt="${anime.title || 'No Title'}" 
+                     onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
+                <div class="info">
+                    <h3>${anime.title || 'No Title'}</h3>
+                    <p>${genreDisplay}</p>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     document.querySelector('.pagination').style.display = 'none';
 }
 
@@ -242,4 +236,4 @@ document.addEventListener('DOMContentLoaded', () => {
 console.log('🚀 AnimeStream dengan Google Spreadsheet siap!');
 console.log('📊 Data otomatis dari spreadsheet.');
 console.log('💡 Edit spreadsheet, refresh website, data langsung berubah!');
-console.log('🎯 Semua genre muncul di Home & Detail!');
+console.log('🎯 Genre di-split dengan benar!');
