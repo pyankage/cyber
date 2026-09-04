@@ -82,7 +82,7 @@ async function loadFromSpreadsheet() {
 }
 
 // ============================================================
-//  ★ RENDER ANIME LIST (GENRE PAKAI SPLIT) ★
+//  ★ RENDER ANIME LIST (GENRE PAKAI FILTER) ★
 // ============================================================
 function renderAnimeList(animeList, genre = 'all', page = 1) {
     const grid = document.getElementById('animeGrid');
@@ -93,7 +93,7 @@ function renderAnimeList(animeList, genre = 'all', page = 1) {
 
     if (genre !== 'all') {
         filteredList = filteredList.filter(anime => {
-            const genres = anime.genre ? anime.genre.toLowerCase().split(/[,;]\s*/) : [];
+            const genres = anime.genre ? anime.genre.toLowerCase().split(/[,;]\s*/).filter(g => g.trim()) : [];
             return genres.some(g => g.trim() === genre.toLowerCase());
         });
     }
@@ -114,8 +114,8 @@ function renderAnimeList(animeList, genre = 'all', page = 1) {
     }
 
     grid.innerHTML = pageItems.map(anime => {
-        // ★ FORMAT GENRE DENGAN SPLIT ★
-        const genreDisplay = anime.genre ? anime.genre.split(',').map(g => g.trim()).join(', ') : 'Anime';
+        // ★ GENRE DI-SPLIT DAN DI-FILTER ★
+        const genreDisplay = anime.genre ? anime.genre.split(/[,;]\s*/).filter(g => g.trim()).map(g => g.trim()).join(', ') : 'Anime';
         
         return `
             <div class="anime-card" onclick="openAnime('${anime.id}')">
@@ -206,7 +206,7 @@ async function searchAnime() {
     }
 
     grid.innerHTML = results.map(anime => {
-        const genreDisplay = anime.genre ? anime.genre.split(',').map(g => g.trim()).join(', ') : 'Anime';
+        const genreDisplay = anime.genre ? anime.genre.split(/[,;]\s*/).filter(g => g.trim()).map(g => g.trim()).join(', ') : 'Anime';
         return `
             <div class="anime-card" onclick="openAnime('${anime.id}')">
                 <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" 
@@ -236,4 +236,4 @@ document.addEventListener('DOMContentLoaded', () => {
 console.log('🚀 AnimeStream dengan Google Spreadsheet siap!');
 console.log('📊 Data otomatis dari spreadsheet.');
 console.log('💡 Edit spreadsheet, refresh website, data langsung berubah!');
-console.log('🎯 Genre di-split dengan benar!');
+console.log('🎯 Genre di-split dengan filter!');
