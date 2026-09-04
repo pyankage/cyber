@@ -86,7 +86,7 @@ async function loadFromSpreadsheet() {
     }
 }
 
-// ============================================================
+/// ============================================================
 //  ★ RENDER ANIME LIST ★
 // ============================================================
 function renderAnimeList(animeList, genre = 'all', page = 1) {
@@ -129,7 +129,7 @@ function renderAnimeList(animeList, genre = 'all', page = 1) {
                  onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
             <div class="info">
                 <h3>${anime.title || 'No Title'}</h3>
-                <p>${anime.genre || 'Anime'}</p>
+                <p>${anime.genre ? anime.genre.replace(/,/g, ', ') : 'Anime'}</p>
             </div>
         </div>
     `).join('');
