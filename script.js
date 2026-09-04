@@ -21,10 +21,8 @@ async function loadAnimeList(genre = 'all', page = 1) {
         const data = await response.json();
         let animeList = data.anime || [];
 
-        // Sortir dari yang terbaru
         animeList.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        // Filter genre
         if (genre !== 'all') {
             animeList = animeList.filter(anime => {
                 const genres = anime.genre.toLowerCase().split(', ');
@@ -32,7 +30,6 @@ async function loadAnimeList(genre = 'all', page = 1) {
             });
         }
 
-        // Pagination
         totalPages = Math.ceil(animeList.length / itemsPerPage) || 1;
         if (page > totalPages) page = totalPages;
         if (page < 1) page = 1;
@@ -92,6 +89,10 @@ function filterByGenre(genre) {
         b.classList.toggle('active', b.dataset.genre === genre);
     });
     loadAnimeList(genre, 1);
+    const genreFilter = document.getElementById('genreFilter');
+    if (genreFilter) {
+        genreFilter.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 function goHome() {
@@ -145,3 +146,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 console.log('🚀 AnimeStream Cyberpunk siap!');
 console.log('💜 Tema Dark Neon + Glassmorphism aktif!');
+console.log('📌 Genre filter di bawah pagination.');
