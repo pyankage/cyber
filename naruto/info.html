@@ -285,23 +285,15 @@
             const container = document.getElementById('detailContent');
             const breadcrumbTitle = document.getElementById('breadcrumbTitle');
 
-            console.log('🔍 Loading detail...');
-
             // Ambil data dari localStorage
             const animeData = localStorage.getItem('currentAnime');
             const episodesData = localStorage.getItem('currentEpisodes');
-
-            console.log('📦 Anime data:', animeData);
-            console.log('📦 Episodes data:', episodesData);
 
             if (!animeData) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>Data anime tidak ditemukan.</p>
-                        <p style="font-size:12px; margin-top:8px; color:#8892b0;">
-                            Silakan kembali ke Home dan klik kartu anime.
-                        </p>
                         <button onclick="location.href='../index.html'" style="margin-top:15px;padding:10px 25px;background:var(--neon-purple);border:none;border-radius:50px;color:#fff;cursor:pointer;">
                             Kembali ke Home
                         </button>
@@ -313,14 +305,11 @@
             const anime = JSON.parse(animeData);
             const episodes = episodesData ? JSON.parse(episodesData) : [];
 
-            console.log('📺 Anime:', anime.title);
-            console.log('📺 Episodes:', episodes.length);
-
             // Update breadcrumb
             breadcrumbTitle.textContent = anime.title;
 
-            // ★ RENDER GENRE - PAKAI REPLACE (SAMA KAYAK HOME) ★
-            const genres = anime.genre ? anime.genre.replace(/,\s*/g, ', ') : '';
+            // ★ GENRE DI-SPLIT DENGAN FILTER (SEMUA GENRE MUNCUL) ★
+            const genres = anime.genre ? anime.genre.split(/[,;]\s*/).filter(g => g.trim()).map(g => g.trim()).join(', ') : '';
 
             // Render episode buttons
             let episodeButtons = '';
@@ -328,7 +317,7 @@
                 episodeButtons = episodes.map(ep => `
                     <div class="episode-btn" onclick="location.href='../watch.html?anime=${anime.id}&ep=${ep.number}&url=${ep.url}'">
                         <span class="ep-num">EP ${ep.number}</span>
-                        <span class="ep-title">${ep.title || anime.title + ' Episode ' + ep.number}</span>
+                        <span class="ep-title">${anime.title} Episode ${ep.number}</span>
                     </div>
                 `).join('');
             } else {
@@ -367,6 +356,7 @@
 
         console.log('📊 Detail page loaded.');
         console.log('💡 Data dari localStorage.');
+        console.log('🎯 Genre sudah di-split dengan filter!');
     </script>
 
 </body>
