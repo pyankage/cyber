@@ -58,9 +58,19 @@ header {
     align-items:center;
     background:rgba(255,255,255,0.05);
     border:var(--border-neon);
-    border-radius:50px;
     padding:6px 6px 6px 18px;
     transition:0.3s;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        10px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 10px),
+        calc(100% - 10px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 10px
+    );
 }
 .search-box:focus-within { border-color:var(--neon-purple); box-shadow:var(--glow-purple); }
 .search-box input {
@@ -78,10 +88,20 @@ header {
     border:none;
     color:#fff;
     padding:10px 16px;
-    border-radius:50px;
     cursor:pointer;
     font-size:14px;
     transition:0.3s;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        8px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 8px),
+        calc(100% - 8px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 8px
+    );
 }
 .search-box button:hover { transform:scale(1.05); box-shadow:0 0 30px rgba(168,85,247,0.3); }
 
@@ -126,10 +146,20 @@ header {
     padding:60px 30px 50px;
     margin:0 30px;
     background:linear-gradient(135deg,rgba(168,85,247,0.08),rgba(236,72,153,0.05));
-    border-radius:24px;
     border:var(--border-neon);
     overflow:hidden;
     margin-top:20px;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        16px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 16px),
+        calc(100% - 16px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 16px
+    );
 }
 .hero-banner::before {
     content:'';
@@ -172,7 +202,6 @@ header {
     color:#fff;
     border:none;
     padding:12px 28px;
-    border-radius:50px;
     font-weight:600;
     font-size:14px;
     cursor:pointer;
@@ -180,6 +209,17 @@ header {
     display:flex;
     align-items:center;
     gap:10px;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        12px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 12px),
+        calc(100% - 12px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 12px
+    );
 }
 .btn-primary:hover { transform:translateY(-2px); box-shadow:0 0 40px rgba(168,85,247,0.3); }
 .btn-secondary {
@@ -187,7 +227,6 @@ header {
     color:var(--text-primary);
     border:var(--border-neon);
     padding:12px 28px;
-    border-radius:50px;
     font-weight:600;
     font-size:14px;
     cursor:pointer;
@@ -195,6 +234,17 @@ header {
     display:flex;
     align-items:center;
     gap:10px;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        12px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 12px),
+        calc(100% - 12px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 12px
+    );
 }
 .btn-secondary:hover { border-color:var(--neon-purple); box-shadow:var(--glow-purple); }
 .hero-glow {
@@ -264,10 +314,20 @@ header {
     backdrop-filter:blur(10px);
     -webkit-backdrop-filter:blur(10px);
     border:var(--border-neon);
-    border-radius:16px;
     max-height:150px;
     overflow-y:auto;
     justify-content:center;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        10px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 10px),
+        calc(100% - 10px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 10px
+    );
 }
 .genre-filter::-webkit-scrollbar { width:4px; }
 .genre-filter::-webkit-scrollbar-track { background:transparent; }
@@ -278,12 +338,22 @@ header {
     border:1px solid rgba(255,255,255,0.06);
     color:var(--text-secondary);
     padding:6px 16px;
-    border-radius:50px;
     cursor:pointer;
     font-size:12px;
     font-weight:500;
     transition:0.3s;
     white-space:nowrap;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        6px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 6px),
+        calc(100% - 6px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 6px
+    );
 }
 .genre-btn:hover { background:rgba(168,85,247,0.1); color:var(--text-primary); border-color:var(--neon-purple); }
 .genre-btn.active {
@@ -304,11 +374,21 @@ header {
     background:var(--bg-card);
     backdrop-filter:blur(10px);
     border:var(--border-neon);
-    border-radius:16px;
     overflow:hidden;
     cursor:pointer;
     transition:0.3s;
     position:relative;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        8px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 8px),
+        calc(100% - 8px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 8px
+    );
 }
 .anime-card::before {
     content:'';
@@ -353,13 +433,23 @@ header {
     border:var(--border-neon);
     color:var(--text-primary);
     padding:8px 20px;
-    border-radius:50px;
     cursor:pointer;
     font-size:13px;
     transition:0.3s;
     display:flex;
     align-items:center;
     gap:8px;
+    /* CLIPPED CORNER: kiri atas + kanan bawah */
+    clip-path: polygon(
+        8px 0%,
+        100% 0%,
+        100% 0%,
+        100% calc(100% - 8px),
+        calc(100% - 8px) 100%,
+        0% 100%,
+        0% 100%,
+        0% 8px
+    );
 }
 .pagination button:hover:not(:disabled) {
     background:linear-gradient(135deg,var(--neon-purple),var(--neon-pink));
