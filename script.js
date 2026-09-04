@@ -116,4 +116,37 @@ async function searchAnime() {
         if (currentGenre !== 'all') {
             results = results.filter(a => {
                 const g = a.genre.toLowerCase().split(/[,;]\s*/);
-                return g
+                return g.some(x => x.trim() === currentGenre.toLowerCase());
+            });
+        }
+        if (results.length === 0) {
+            grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>Tidak ada hasil untuk "${query}"</p></div>`;
+            return;
+        }
+        grid.innerHTML = results.map(anime => `
+            <div class="anime-card" onclick="location.href='${anime.id}/info.html'">
+                <img src="${anime.image}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
+                <div class="info">
+                    <h3>${anime.title}</h3>
+                    <p>${anime.genre || 'Anime'}</p>
+                </div>
+            </div>
+        `).join('');
+        document.querySelector('.pagination').style.display = 'none';
+    } catch (err) { console.error(err); }
+}
+
+// ============================================================
+//  INISIALISASI
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    loadAnimeList('all', 1);
+    document.getElementById('searchInput')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') searchAnime();
+    });
+    document.querySelector('.pagination').style.display = 'flex';
+});
+
+console.log('🚀 AnimeStream Cyberpunk siap!');
+console.log('💜 Tema Dark Neon + Glassmorphism aktif!');
+console.log('📌 28 Genre filter siap digunakan!');
