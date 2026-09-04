@@ -21,15 +21,18 @@ async function loadAnimeList(genre = 'all', page = 1) {
         const data = await response.json();
         let animeList = data.anime || [];
 
+        // Sortir dari yang terbaru
         animeList.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+        // Filter genre (case insensitive)
         if (genre !== 'all') {
             animeList = animeList.filter(anime => {
-                const genres = anime.genre.toLowerCase().split(', ');
-                return genres.some(g => g.includes(genre.toLowerCase()));
+                const genres = anime.genre.toLowerCase().split(/[,;]\s*/);
+                return genres.some(g => g.trim() === genre.toLowerCase());
             });
         }
 
+        // Pagination
         totalPages = Math.ceil(animeList.length / itemsPerPage) || 1;
         if (page > totalPages) page = totalPages;
         if (page < 1) page = 1;
@@ -40,7 +43,7 @@ async function loadAnimeList(genre = 'all', page = 1) {
         const pageItems = animeList.slice(start, end);
 
         if (pageItems.length === 0) {
-            grid.innerHTML = `<div class="empty-state"><i class="fas fa-frown"></i><p>Tidak ada anime.</p></div>`;
+            grid.innerHTML = `<div class="empty-state"><i class="fas fa-frown"></i><p>Tidak ada anime dengan genre "${genre}".</p></div>`;
             updatePaginationButtons();
             return;
         }
@@ -112,38 +115,5 @@ async function searchAnime() {
         let results = data.anime.filter(a => a.title.toLowerCase().includes(query));
         if (currentGenre !== 'all') {
             results = results.filter(a => {
-                const g = a.genre.toLowerCase().split(', ');
-                return g.some(x => x.includes(currentGenre.toLowerCase()));
-            });
-        }
-        if (results.length === 0) {
-            grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>Tidak ada hasil untuk "${query}"</p></div>`;
-            return;
-        }
-        grid.innerHTML = results.map(anime => `
-            <div class="anime-card" onclick="location.href='${anime.id}/info.html'">
-                <img src="${anime.image}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
-                <div class="info">
-                    <h3>${anime.title}</h3>
-                    <p>${anime.genre || 'Anime'}</p>
-                </div>
-            </div>
-        `).join('');
-        document.querySelector('.pagination').style.display = 'none';
-    } catch (err) { console.error(err); }
-}
-
-// ============================================================
-//  INISIALISASI
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-    loadAnimeList('all', 1);
-    document.getElementById('searchInput')?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') searchAnime();
-    });
-    document.querySelector('.pagination').style.display = 'flex';
-});
-
-console.log('🚀 AnimeStream Cyberpunk siap!');
-console.log('💜 Tema Dark Neon + Glassmorphism aktif!');
-console.log('📌 Genre filter di bawah pagination.');
+                const g = a.genre.toLowerCase().split(/[,;]\s*/);
+                return g
