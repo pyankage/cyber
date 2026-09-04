@@ -1,6 +1,6 @@
 // ============================================================
 //  ★ KONFIGURASI SPREADSHEET ★
-//  Ganti ID di bawah dengan spreadsheet-mu
+//  Ganti ID dengan spreadsheet-mu
 // ============================================================
 
 // ★ GANTI DENGAN ID SPREADSHEET ANIME ★
@@ -12,16 +12,6 @@ const SHEET_ID_EPISODE = '2PACX-1vT15YMAkebNMF0RMD-QCdgXFWSCmdVG0Rm7JUN3ih0jq71p
 // URL untuk mengambil data CSV
 const ANIME_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID_ANIME}/pub?output=csv&gid=0`;
 const EPISODES_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID_EPISODE}/pub?output=csv&gid=0`;
-
-// ============================================================
-//  ★ STATE ★
-// ============================================================
-let currentGenre = 'all';
-let currentPage = 1;
-const itemsPerPage = 24;
-let totalPages = 1;
-let animeList = [];
-let episodesList = [];
 
 // ============================================================
 //  ★ PARSE CSV ★
@@ -55,19 +45,23 @@ async function loadFromSpreadsheet() {
         const animeRes = await fetch(ANIME_URL);
         if (!animeRes.ok) throw new Error('Gagal load anime');
         const animeCSV = await animeRes.text();
-        animeList = parseCSV(animeCSV);
+        const animeList = parseCSV(animeCSV);
 
         // Load episodes
         const epRes = await fetch(EPISODES_URL);
         if (!epRes.ok) throw new Error('Gagal load episodes');
         const epCSV = await epRes.text();
-        episodesList = parseCSV(epCSV);
+        const episodesList = parseCSV(epCSV);
 
         console.log('📊 Anime loaded:', animeList.length);
         console.log('📊 Episodes loaded:', episodesList.length);
 
+        // Simpan ke localStorage untuk diakses info.html
+        localStorage.setItem('allAnime', JSON.stringify(animeList));
+        localStorage.setItem('allEpisodes', JSON.stringify(episodesList));
+
         // Render halaman
-        loadAnimeList(currentGenre, 1);
+        renderAnimeList(animeList, 'all', 1);
     } catch (error) {
         console.error('Error loading from spreadsheet:', error);
         grid.innerHTML = `
@@ -83,19 +77,18 @@ async function loadFromSpreadsheet() {
 }
 
 // ============================================================
-//  ★ LOAD DAFTAR ANIME ★
+//  ★ RENDER ANIME LIST ★
 // ============================================================
-function loadAnimeList(genre = 'all', page = 1) {
+function renderAnimeList(animeList, genre = 'all', page = 1) {
     const grid = document.getElementById('animeGrid');
     if (!grid) return;
-    grid.innerHTML = `<div class="loader"><i class="fas fa-spinner"></i></div>`;
 
     let filteredList = [...animeList];
 
     // Sortir dari yang terbaru
     filteredList.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // Filter genre (case insensitive)
+    // Filter genre
     if (genre !== 'all') {
         filteredList = filteredList.filter(anime => {
             const genres = anime.genre ? anime.genre.toLowerCase().split(/[,;]\s*/) : [];
@@ -104,10 +97,10 @@ function loadAnimeList(genre = 'all', page = 1) {
     }
 
     // Pagination
-    totalPages = Math.ceil(filteredList.length / itemsPerPage) || 1;
+    const itemsPerPage = 24;
+    const totalPages = Math.ceil(filteredList.length / itemsPerPage) || 1;
     if (page > totalPages) page = totalPages;
     if (page < 1) page = 1;
-    currentPage = page;
 
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
@@ -115,53 +108,27 @@ function loadAnimeList(genre = 'all', page = 1) {
 
     if (pageItems.length === 0) {
         grid.innerHTML = `<div class="empty-state"><i class="fas fa-frown"></i><p>Tidak ada anime dengan genre "${genre}".</p></div>`;
-        updatePaginationButtons();
+        updatePaginationButtons(totalPages, page);
         return;
     }
 
     grid.innerHTML = pageItems.map(anime => `
         <div class="anime-card" onclick="openAnime('${anime.id}')">
-            <img src="${anime.image}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
+            <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
             <div class="info">
-                <h3>${anime.title}</h3>
+                <h3>${anime.title || 'No Title'}</h3>
                 <p>${anime.genre || 'Anime'}</p>
             </div>
         </div>
     `).join('');
 
-    updatePaginationButtons();
+    updatePaginationButtons(totalPages, page);
 }
 
 // ============================================================
-//  ★ OPEN ANIME DETAIL ★
+//  ★ UPDATE PAGINATION ★
 // ============================================================
-function openAnime(animeId) {
-    const anime = animeList.find(a => a.id === animeId);
-    if (!anime) {
-        alert('Anime tidak ditemukan!');
-        return;
-    }
-
-    // Simpan data anime ke localStorage untuk info.html
-    localStorage.setItem('currentAnime', JSON.stringify(anime));
-    
-    // Simpan episodes untuk anime ini
-    const episodes = episodesList.filter(ep => ep.anime_id === animeId);
-    localStorage.setItem('currentEpisodes', JSON.stringify(episodes));
-
-    location.href = `${animeId}/info.html`;
-}
-
-// ============================================================
-//  ★ PAGINATION ★
-// ============================================================
-function changePage(delta) {
-    const newPage = currentPage + delta;
-    if (newPage < 1 || newPage > totalPages) return;
-    loadAnimeList(currentGenre, newPage);
-}
-
-function updatePaginationButtons() {
+function updatePaginationButtons(totalPages, currentPage) {
     const prev = document.getElementById('prevPageBtn');
     const next = document.getElementById('nextPageBtn');
     const info = document.getElementById('pageInfo');
@@ -171,14 +138,35 @@ function updatePaginationButtons() {
 }
 
 // ============================================================
+//  ★ OPEN ANIME ★
+// ============================================================
+function openAnime(animeId) {
+    const allAnime = JSON.parse(localStorage.getItem('allAnime') || '[]');
+    const allEpisodes = JSON.parse(localStorage.getItem('allEpisodes') || '[]');
+
+    const anime = allAnime.find(a => a.id === animeId);
+    if (!anime) {
+        alert('Anime tidak ditemukan!');
+        return;
+    }
+
+    const episodes = allEpisodes.filter(ep => ep.anime_id === animeId);
+
+    localStorage.setItem('currentAnime', JSON.stringify(anime));
+    localStorage.setItem('currentEpisodes', JSON.stringify(episodes));
+
+    location.href = `${animeId}/info.html`;
+}
+
+// ============================================================
 //  ★ FILTER & SEARCH ★
 // ============================================================
 function filterByGenre(genre) {
-    currentGenre = genre;
+    const allAnime = JSON.parse(localStorage.getItem('allAnime') || '[]');
     document.querySelectorAll('.genre-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.genre === genre);
     });
-    loadAnimeList(genre, 1);
+    renderAnimeList(allAnime, genre, 1);
     const genreFilter = document.getElementById('genreFilter');
     if (genreFilter) {
         genreFilter.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -188,19 +176,17 @@ function filterByGenre(genre) {
 function goHome() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-home').classList.add('active');
-    loadAnimeList(currentGenre, 1);
+    const allAnime = JSON.parse(localStorage.getItem('allAnime') || '[]');
+    renderAnimeList(allAnime, 'all', 1);
 }
 
 function searchAnime() {
     const query = document.getElementById('searchInput')?.value.trim().toLowerCase();
     const grid = document.getElementById('animeGrid');
-    if (!query || !grid) { loadAnimeList(currentGenre, 1); return; }
+    if (!query || !grid) { goHome(); return; }
 
-    const results = animeList.filter(a => a.title.toLowerCase().includes(query));
-    if (currentGenre !== 'all') {
-        // Filter by genre too
-        // (already filtered)
-    }
+    const allAnime = JSON.parse(localStorage.getItem('allAnime') || '[]');
+    const results = allAnime.filter(a => a.title.toLowerCase().includes(query));
 
     if (results.length === 0) {
         grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>Tidak ada hasil untuk "${query}"</p></div>`;
@@ -209,9 +195,9 @@ function searchAnime() {
 
     grid.innerHTML = results.map(anime => `
         <div class="anime-card" onclick="openAnime('${anime.id}')">
-            <img src="${anime.image}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
+            <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
             <div class="info">
-                <h3>${anime.title}</h3>
+                <h3>${anime.title || 'No Title'}</h3>
                 <p>${anime.genre || 'Anime'}</p>
             </div>
         </div>
