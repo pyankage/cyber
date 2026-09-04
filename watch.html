@@ -79,25 +79,27 @@
         }
         .nav-links a:hover { color: var(--neon-purple); }
 
-        /* KONTEN */
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-
-        .back-detail {
-            display: inline-flex;
+        /* BREADCRUMB */
+        .breadcrumb {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            background: transparent;
-            color: var(--text-secondary);
-            border: var(--border-neon);
+            gap: 10px;
+            padding: 15px 0 10px 0;
             font-size: 13px;
-            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
             cursor: pointer;
             transition: 0.3s;
-            padding: 10px 20px;
-            border-radius: 50px;
-            margin-bottom: 15px;
         }
-        .back-detail:hover { color: var(--neon-purple); border-color: var(--neon-purple); box-shadow: var(--glow-purple); }
+        .breadcrumb a:hover { color: var(--neon-purple); }
+        .breadcrumb i { font-size: 10px; color: rgba(255,255,255,0.1); }
+        .breadcrumb span { color: var(--text-primary); font-weight: 600; }
+
+        /* KONTEN */
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
         .video-wrapper {
             background: #000;
@@ -201,9 +203,14 @@
 
     <div class="container">
 
-        <button class="back-detail" onclick="goBack()">
-            <i class="fas fa-arrow-left"></i> Kembali ke Detail
-        </button>
+        <!-- ★ BREADCRUMB NAVIGASI (TANPA TOMBOL KEMBALI) ★ -->
+        <div class="breadcrumb">
+            <a href="#" onclick="goHome()">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="#" id="breadcrumbSeriesLink" onclick="goToDetail()">Series</a>
+            <i class="fas fa-chevron-right"></i>
+            <span id="breadcrumbEpisode">Episode</span>
+        </div>
 
         <div class="video-wrapper">
             <iframe id="videoPlayer" src="" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"></iframe>
@@ -236,6 +243,7 @@
         ];
 
         let currentIndex = 0;
+        let currentAnimeTitle = '';
 
         function findEpisodeIndex(epNumber) {
             for (let i = 0; i < episodeList.length; i++) {
@@ -255,6 +263,13 @@
             document.getElementById('prevBtn').disabled = (index <= 0);
             document.getElementById('nextBtn').disabled = (index >= episodeList.length - 1);
 
+            // Update breadcrumb
+            const seriesName = document.getElementById('breadcrumbSeriesLink');
+            if (seriesName) {
+                seriesName.textContent = currentAnimeTitle || 'Series';
+            }
+            document.getElementById('breadcrumbEpisode').textContent = `Episode ${ep.number}`;
+
             const newUrl = `?anime=${animeFolder}&ep=${ep.number}&url=${encodeURIComponent(ep.url)}`;
             window.history.pushState({ path: newUrl }, '', newUrl);
         }
@@ -265,13 +280,28 @@
             loadEpisode(newIndex);
         }
 
-        function goBack() {
+        function goHome() {
+            location.href = 'index.html';
+        }
+
+        function goToDetail() {
             if (animeFolder) {
                 location.href = `${animeFolder}/info.html`;
             } else {
                 location.href = 'index.html';
             }
         }
+
+        // Ambil judul anime dari localStorage atau URL
+        function getAnimeTitle() {
+            try {
+                const data = JSON.parse(localStorage.getItem('currentAnime'));
+                if (data && data.title) return data.title;
+            } catch (e) {}
+            return animeFolder.charAt(0).toUpperCase() + animeFolder.slice(1) || 'Series';
+        }
+
+        currentAnimeTitle = getAnimeTitle();
 
         if (episodeParam) {
             const idx = findEpisodeIndex(parseInt(episodeParam));
