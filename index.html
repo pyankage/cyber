@@ -3,158 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeStream - Cyberpunk</title>
+    <title id="pageTitle">AnimeStream - Detail</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121f;
+            --bg-card: rgba(18, 18, 31, 0.6);
+            --neon-purple: #a855f7;
+            --neon-pink: #ec4899;
+            --text-primary: #f1f3f5;
+            --text-secondary: #8892b0;
+            --glow-purple: 0 0 30px rgba(168, 85, 247, 0.15);
+            --border-neon: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: var(--border-neon);
+            padding: 12px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo .neon { color: var(--neon-purple); text-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+        .cyber-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8px;
+            font-weight: 700;
+            color: var(--neon-pink);
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--neon-purple); }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 0 10px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .breadcrumb a:hover { color: var(--neon-purple); }
+        .breadcrumb i { font-size: 10px; color: rgba(255,255,255,0.1); }
+        .breadcrumb span { color: var(--text-primary); font-weight: 600; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px 30px 30px; }
+
+        .detail-banner {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--border-neon);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .detail-banner .poster {
+            flex: 0 0 220px;
+            height: 320px;
+        }
+        .detail-banner .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .detail-banner .desc {
+            flex: 1;
+            padding: 25px 30px;
+        }
+        .detail-banner .desc h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .detail-banner .desc .status {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            color: #fff;
+            padding: 2px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        .detail-banner .desc .genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        .detail-banner .desc .genres span {
+            background: rgba(255,255,255,0.05);
+            border: var(--border-neon);
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .detail-banner .desc p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+        .detail-banner .desc .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .detail-banner .desc .meta-info i { color: var(--neon-purple); margin-right: 5px; }
+
+        .episode-section { margin-top: 30px; }
+        .episode-section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .episode-section h2 i { color: var(--neon-pink); margin-right: 10px; }
+
+        .episode-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+        .episode-btn {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: var(--border-neon);
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .episode-btn:hover {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            border-color: transparent;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
+            transform: translateY(-3px);
+        }
+        .episode-btn .ep-num {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--neon-purple);
+        }
+        .episode-btn:hover .ep-num { color: #fff; }
+        .episode-btn .ep-title {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .episode-btn:hover .ep-title { color: rgba(255,255,255,0.8); }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 18px;
+            border-top: var(--border-neon);
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .footer .neon { color: var(--neon-pink); }
+
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; flex-direction: column; align-items: stretch; gap: 10px; }
+            .nav-links { justify-content: center; flex-wrap: wrap; gap: 12px; }
+            .container { padding: 10px 15px; }
+            .detail-banner .poster { flex: 0 0 100%; height: 220px; }
+            .detail-banner .desc { padding: 15px; }
+            .detail-banner .desc h1 { font-size: 20px; }
+            .episode-list { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- HEADER -->
     <header>
-        <div class="header-top">
-            <div class="logo">
-                <span class="neon">A</span><span>nime</span><span class="neon">S</span><span>tream</span>
-                <span class="cyber-badge">✦ BETA</span>
-            </div>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Cari anime..." onkeydown="if(event.key==='Enter') searchAnime()">
-                <button onclick="searchAnime()"><i class="fas fa-search"></i></button>
-            </div>
+        <div class="logo">
+            <span class="neon">A</span>nime<span class="neon">S</span>tream
+            <span class="cyber-badge">✦ DETAIL</span>
         </div>
-        <nav class="main-nav" id="mainNav">
-            <a href="#" class="active" onclick="goHome()"><i class="fas fa-home"></i> Home</a>
-            <a href="#" onclick="filterByGenre('all')"><i class="fas fa-fire"></i> Trending</a>
-            <a href="#" onclick="filterByGenre('donghua')"><i class="fas fa-dragon"></i> Donghua</a>
-            <a href="#" onclick="document.getElementById('genreFilter').scrollIntoView({behavior:'smooth'})"><i class="fas fa-tags"></i> Genre</a>
-            <a href="#" onclick="alert('Jadwal rilis akan segera hadir!')"><i class="fas fa-calendar-alt"></i> Jadwal</a>
-        </nav>
+        <div class="nav-links">
+            <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="#"><i class="fas fa-fire"></i> Trending</a>
+            <a href="#"><i class="fas fa-tags"></i> Genre</a>
+        </div>
     </header>
 
-    <!-- HERO BANNER -->
-    <div class="hero-banner">
-        <div class="hero-content">
-            <div class="hero-tag">✦ NOW STREAMING</div>
-            <h1 class="hero-title">Cyber<span class="neon">Anime</span></h1>
-            <p class="hero-desc">Nikmati ribuan anime & donghua favoritmu dengan kualitas terbaik. Streaming gratis, kapan saja, di mana saja.</p>
-            <div class="hero-buttons">
-                <button class="btn-primary" onclick="document.querySelector('.section-title').scrollIntoView({behavior:'smooth'})">
-                    <i class="fas fa-play"></i> Mulai Nonton
-                </button>
-                <button class="btn-secondary" onclick="filterByGenre('all')">
-                    <i class="fas fa-list"></i> Lihat Semua
-                </button>
-            </div>
-        </div>
-        <div class="hero-glow"></div>
-    </div>
-
-    <!-- KONTEN -->
     <div class="container">
 
-        <div id="page-home" class="page active">
-
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fas fa-fire"></i> Trending Sekarang
-                    <span class="section-badge">HOT</span>
-                </div>
-                <div class="section-nav">
-                    <button class="nav-dot active"></button>
-                    <button class="nav-dot"></button>
-                    <button class="nav-dot"></button>
-                </div>
-            </div>
-
-            <!-- GRID ANIME -->
-            <div id="animeGrid" class="anime-grid"></div>
-
-            <!-- PAGINATION -->
-            <div class="pagination">
-                <button id="prevPageBtn" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
-                <span id="pageInfo">Halaman 1 dari 1</span>
-                <button id="nextPageBtn" onclick="changePage(1)">Next <i class="fas fa-chevron-right"></i></button>
-            </div>
-
-            <!-- ★ GENRE FILTER LENGKAP (28 GENRE) ★ -->
-            <div class="genre-filter" id="genreFilter">
-                <button class="genre-btn active" data-genre="all" onclick="filterByGenre('all')">Semua</button>
-                
-                <!-- Action / Petualangan -->
-                <button class="genre-btn" data-genre="action" onclick="filterByGenre('action')">Action</button>
-                <button class="genre-btn" data-genre="adventure" onclick="filterByGenre('adventure')">Adventure</button>
-                <button class="genre-btn" data-genre="fantasy" onclick="filterByGenre('fantasy')">Fantasy</button>
-                
-                <!-- Komedi / Slice of Life -->
-                <button class="genre-btn" data-genre="comedy" onclick="filterByGenre('comedy')">Comedy</button>
-                <button class="genre-btn" data-genre="slice-of-life" onclick="filterByGenre('slice-of-life')">Slice of Life</button>
-                
-                <!-- Romansa / Drama -->
-                <button class="genre-btn" data-genre="romance" onclick="filterByGenre('romance')">Romance</button>
-                <button class="genre-btn" data-genre="drama" onclick="filterByGenre('drama')">Drama</button>
-                
-                <!-- Dark / Misteri -->
-                <button class="genre-btn" data-genre="dark-fantasy" onclick="filterByGenre('dark-fantasy')">Dark Fantasy</button>
-                <button class="genre-btn" data-genre="mystery" onclick="filterByGenre('mystery')">Mystery</button>
-                <button class="genre-btn" data-genre="thriller" onclick="filterByGenre('thriller')">Thriller</button>
-                <button class="genre-btn" data-genre="horror" onclick="filterByGenre('horror')">Horror</button>
-                <button class="genre-btn" data-genre="psychological" onclick="filterByGenre('psychological')">Psychological</button>
-                
-                <!-- Demografi -->
-                <button class="genre-btn" data-genre="shonen" onclick="filterByGenre('shonen')">Shonen</button>
-                <button class="genre-btn" data-genre="shoujo" onclick="filterByGenre('shoujo')">Shoujo</button>
-                <button class="genre-btn" data-genre="seinen" onclick="filterByGenre('seinen')">Seinen</button>
-                <button class="genre-btn" data-genre="josei" onclick="filterByGenre('josei')">Josei</button>
-                
-                <!-- Sub-Genre Populer -->
-                <button class="genre-btn" data-genre="isekai" onclick="filterByGenre('isekai')">Isekai</button>
-                <button class="genre-btn" data-genre="mecha" onclick="filterByGenre('mecha')">Mecha</button>
-                <button class="genre-btn" data-genre="sports" onclick="filterByGenre('sports')">Sports</button>
-                <button class="genre-btn" data-genre="school" onclick="filterByGenre('school')">School</button>
-                <button class="genre-btn" data-genre="supernatural" onclick="filterByGenre('supernatural')">Supernatural</button>
-                <button class="genre-btn" data-genre="sci-fi" onclick="filterByGenre('sci-fi')">Sci-Fi</button>
-                
-                <!-- Donghua Khas -->
-                <button class="genre-btn" data-genre="donghua" onclick="filterByGenre('donghua')">Donghua</button>
-                <button class="genre-btn" data-genre="cultivation" onclick="filterByGenre('cultivation')">Cultivation</button>
-                <button class="genre-btn" data-genre="wuxia" onclick="filterByGenre('wuxia')">Wuxia</button>
-                <button class="genre-btn" data-genre="xianxia" onclick="filterByGenre('xianxia')">Xianxia</button>
-                <button class="genre-btn" data-genre="historical" onclick="filterByGenre('historical')">Historical</button>
-                <button class="genre-btn" data-genre="martial-arts" onclick="filterByGenre('martial-arts')">Martial Arts</button>
-            </div>
-
+        <!-- ★ BREADCRUMB ★ -->
+        <div class="breadcrumb">
+            <a href="#" onclick="location.href='../index.html'">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <span id="breadcrumbTitle">Loading...</span>
         </div>
 
-        <div id="globalLoader" class="loader" style="display:none;">
-            <i class="fas fa-spinner"></i>
+        <!-- ★ DETAIL BANNER ★ -->
+        <div id="detailContent">
+            <div class="loader"><i class="fas fa-spinner"></i></div>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 AnimeStream — Made with <i class="fas fa-heart neon"></i>
         </div>
 
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo">
-                <span class="neon">A</span>nime<span class="neon">S</span>tream
-                <span class="cyber-badge">✦ 2026</span>
-            </div>
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Privacy</a>
-                <a href="#">Contact</a>
-                <a href="#">DMCA</a>
-            </div>
-            <div class="footer-social">
-                <a href="#"><i class="fab fa-discord"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 AnimeStream — Made with <i class="fas fa-heart neon"></i> for anime lovers</p>
-        </div>
-    </footer>
+    <script>
+        // ============================================================
+        //  ★ LOAD DETAIL DARI LOCALSTORAGE ★
+        //  (Data dikirim dari script.js saat user klik kartu)
+        // ============================================================
+        function loadDetail() {
+            const container = document.getElementById('detailContent');
+            const breadcrumbTitle = document.getElementById('breadcrumbTitle');
 
-    <script src="script.js"></script>
+            // Ambil data dari localStorage
+            const animeData = localStorage.getItem('currentAnime');
+            const episodesData = localStorage.getItem('currentEpisodes');
+
+            // Kalau tidak ada data, tampilkan error
+            if (!animeData) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Data anime tidak ditemukan.</p>
+                        <p style="font-size:12px; margin-top:8px; color:#8892b0;">
+                            Silakan kembali ke Home dan klik kartu anime.
+                        </p>
+                        <button onclick="location.href='../index.html'" style="margin-top:15px;padding:10px 25px;background:var(--neon-purple);border:none;border-radius:50px;color:#fff;cursor:pointer;">
+                            Kembali ke Home
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Parse data
+            const anime = JSON.parse(animeData);
+            const episodes = episodesData ? JSON.parse(episodesData) : [];
+
+            // ★ Update judul halaman (tab browser) ★
+            document.getElementById('pageTitle').textContent = `${anime.title} - Detail`;
+
+            // ★ Update breadcrumb ★
+            breadcrumbTitle.textContent = anime.title;
+
+            // ★ Render detail ★
+            const genres = anime.genre ? anime.genre.split(',').map(g => `<span>${g.trim()}</span>`).join('') : '';
+
+            let episodeButtons = '';
+            if (episodes.length > 0) {
+                episodeButtons = episodes.map(ep => `
+                    <div class="episode-btn" onclick="location.href='../watch.html?anime=${anime.id}&ep=${ep.number}&url=${ep.url}'">
+                        <span class="ep-num">EP ${ep.number}</span>
+                        <span class="ep-title">${ep.title || ''}</span>
+                    </div>
+                `).join('');
+            } else {
+                episodeButtons = `<div class="empty-state"><p>Belum ada episode.</p></div>`;
+            }
+
+            container.innerHTML = `
+                <div class="detail-banner">
+                    <div class="poster">
+                        <!-- ★ GAMBAR SAMA DENGAN DI HOME ★ -->
+                        <img src="${anime.image || 'https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'}" 
+                             alt="${anime.title}" 
+                             onerror="this.src='https://via.placeholder.com/300x400/141425/7a7a9a?text=No+Image'">
+                    </div>
+                    <div class="desc">
+                        <!-- ★ JUDUL SAMA DENGAN DI HOME ★ -->
+                        <h1>${anime.title}</h1>
+                        <span class="status">Ongoing</span>
+                        <div class="genres">${genres}</div>
+                        <p>${anime.synopsis || 'Tidak ada sinopsis.'}</p>
+                        <div class="meta-info">
+                            <span><i class="fas fa-calendar-alt"></i> Updated: ${anime.date || new Date().toLocaleDateString('id-ID')}</span>
+                            <span><i class="fas fa-list-ul"></i> Total Episode: ${episodes.length}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="episode-section">
+                    <h2><i class="fas fa-list-ul"></i> Daftar Episode</h2>
+                    <div class="episode-list">${episodeButtons}</div>
+                </div>
+            `;
+        }
+
+        // ============================================================
+        //  ★ INISIALISASI ★
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', loadDetail);
+    </script>
+
 </body>
 </html>
