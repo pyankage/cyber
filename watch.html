@@ -28,7 +28,6 @@
             min-height: 100vh;
         }
 
-        /* HEADER */
         header {
             background: rgba(10, 10, 15, 0.8);
             backdrop-filter: blur(20px);
@@ -79,7 +78,6 @@
         }
         .nav-links a:hover { color: var(--neon-purple); }
 
-        /* BREADCRUMB */
         .breadcrumb {
             display: flex;
             align-items: center;
@@ -98,7 +96,6 @@
         .breadcrumb i { font-size: 10px; color: rgba(255,255,255,0.1); }
         .breadcrumb span { color: var(--text-primary); font-weight: 600; }
 
-        /* KONTEN */
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
         .video-wrapper {
@@ -203,7 +200,6 @@
 
     <div class="container">
 
-        <!-- ★ BREADCRUMB NAVIGASI (TANPA TOMBOL KEMBALI) ★ -->
         <div class="breadcrumb">
             <a href="#" onclick="goHome()">Home</a>
             <i class="fas fa-chevron-right"></i>
@@ -238,27 +234,66 @@
         const episodeParam = urlParams.get('ep');
         const videoUrlParam = urlParams.get('url');
 
-        const episodeList = [
-            { number: 7, title: 'Tsuihou Sareta', url: 'https://ok.ru/videoembed/9912202562114' }
-        ];
+        // ★ BACA DARI LOCALSTORAGE (TANPA HARDCODE) ★
+        let episodeList = [];
+        let currentAnimeTitle = '';
+
+        try {
+            const episodesData = localStorage.getItem('currentEpisodes');
+            if (episodesData) {
+                episodeList = JSON.parse(episodesData);
+                console.log('📦 Episodes from localStorage:', episodeList.length);
+            }
+            
+            const animeData = localStorage.getItem('currentAnime');
+            if (animeData) {
+                const anime = JSON.parse(animeData);
+                currentAnimeTitle = anime.title || 'Series';
+                console.log('📦 Anime title:', currentAnimeTitle);
+            }
+        } catch (e) {
+            console.error('Error parsing localStorage:', e);
+        }
 
         let currentIndex = 0;
-        let currentAnimeTitle = '';
 
         function findEpisodeIndex(epNumber) {
             for (let i = 0; i < episodeList.length; i++) {
-                if (episodeList[i].number == epNumber) return i;
+                if (parseInt(episodeList[i].number) == parseInt(epNumber)) return i;
             }
             return 0;
         }
 
         function loadEpisode(index) {
+            // Kalau ada videoUrl dari URL, langsung pakai (prioritas utama)
+            if (videoUrlParam) {
+                document.getElementById('videoPlayer').src = videoUrlParam;
+                document.getElementById('watchTitle').innerHTML = `${currentAnimeTitle || 'Series'} Episode <span class="neon">${episodeParam || '?'}</span>`;
+                document.getElementById('episodeCounter').textContent = '1 / 1';
+                document.getElementById('prevBtn').disabled = true;
+                document.getElementById('nextBtn').disabled = true;
+                
+                // Update breadcrumb
+                const seriesName = document.getElementById('breadcrumbSeriesLink');
+                if (seriesName) {
+                    seriesName.textContent = currentAnimeTitle || 'Series';
+                }
+                document.getElementById('breadcrumbEpisode').textContent = `Episode ${episodeParam || '?'}`;
+                return;
+            }
+
+            // Kalau tidak ada videoUrl, pakai dari localStorage
+            if (!episodeList || episodeList.length === 0) {
+                document.getElementById('watchTitle').textContent = '⚠️ Belum ada episode';
+                return;
+            }
+
             if (index < 0 || index >= episodeList.length) return;
             const ep = episodeList[index];
             currentIndex = index;
 
             document.getElementById('videoPlayer').src = ep.url;
-            document.getElementById('watchTitle').innerHTML = `Episode <span class="neon">${ep.number}</span> - ${ep.title}`;
+            document.getElementById('watchTitle').innerHTML = `${currentAnimeTitle || 'Series'} Episode <span class="neon">${ep.number}</span>`;
             document.getElementById('episodeCounter').textContent = `${index + 1} / ${episodeList.length}`;
             document.getElementById('prevBtn').disabled = (index <= 0);
             document.getElementById('nextBtn').disabled = (index >= episodeList.length - 1);
@@ -275,6 +310,7 @@
         }
 
         function navigateEpisode(direction) {
+            if (!episodeList || episodeList.length === 0) return;
             const newIndex = currentIndex + direction;
             if (newIndex < 0 || newIndex >= episodeList.length) return;
             loadEpisode(newIndex);
@@ -292,20 +328,13 @@
             }
         }
 
-        // Ambil judul anime dari localStorage atau URL
-        function getAnimeTitle() {
-            try {
-                const data = JSON.parse(localStorage.getItem('currentAnime'));
-                if (data && data.title) return data.title;
-            } catch (e) {}
-            return animeFolder.charAt(0).toUpperCase() + animeFolder.slice(1) || 'Series';
-        }
-
-        currentAnimeTitle = getAnimeTitle();
-
-        if (episodeParam) {
+        // ★ INISIALISASI ★
+        if (videoUrlParam) {
+            // Prioritas: pakai video dari URL
+            loadEpisode(0);
+        } else if (episodeParam && episodeList.length > 0) {
             const idx = findEpisodeIndex(parseInt(episodeParam));
-            loadEpisode(idx);
+            loadEpisode(idx >= 0 ? idx : 0);
         } else if (episodeList.length > 0) {
             loadEpisode(0);
         } else {
@@ -315,11 +344,22 @@
         window.addEventListener('popstate', function() {
             const params = new URLSearchParams(window.location.search);
             const ep = params.get('ep');
-            if (ep) {
+            const url = params.get('url');
+            if (url) {
+                // Jika ada url di parameter, langsung pakai
+                document.getElementById('videoPlayer').src = url;
+                document.getElementById('watchTitle').innerHTML = `${currentAnimeTitle || 'Series'} Episode <span class="neon">${ep || '?'}</span>`;
+                return;
+            }
+            if (ep && episodeList.length > 0) {
                 const idx = findEpisodeIndex(parseInt(ep));
                 loadEpisode(idx);
             }
         });
+
+        console.log('🚀 Watch page ready!');
+        console.log('📺 Episodes:', episodeList.length);
+        console.log('📌 Anime:', currentAnimeTitle);
     </script>
 
 </body>
