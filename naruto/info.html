@@ -319,8 +319,8 @@
             // Update breadcrumb
             breadcrumbTitle.textContent = anime.title;
 
-            // ★ RENDER GENRE (DENGAN trim) ★
-            const genres = anime.genre ? anime.genre.split(',').map(g => `<span>${g.trim()}</span>`).join('') : '';
+            // ★ RENDER GENRE - PAKAI REPLACE (SAMA KAYAK HOME) ★
+            const genres = anime.genre ? anime.genre.replace(/,\s*/g, ', ') : '';
 
             // Render episode buttons
             let episodeButtons = '';
