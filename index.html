@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeStream - Cyberpunk</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    <header>
+        <div class="header-top">
+            <div class="logo">
+                <span class="neon">A</span><span>nime</span><span class="neon">S</span><span>tream</span>
+                <span class="cyber-badge">✦ BETA</span>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Cari anime..." onkeydown="if(event.key==='Enter') searchAnime()">
+                <button onclick="searchAnime()"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <nav class="main-nav" id="mainNav">
+            <a href="#" class="active" onclick="goHome()"><i class="fas fa-home"></i> Home</a>
+            <a href="#" onclick="filterByGenre('all')"><i class="fas fa-fire"></i> Trending</a>
+            <a href="#" onclick="filterByGenre('donghua')"><i class="fas fa-dragon"></i> Donghua</a>
+            <a href="#" onclick="document.querySelector('.genre-filter').scrollIntoView({behavior:'smooth'})"><i class="fas fa-tags"></i> Genre</a>
+            <a href="#" onclick="alert('Jadwal rilis akan segera hadir!')"><i class="fas fa-calendar-alt"></i> Jadwal</a>
+        </nav>
+    </header>
+
+    <!-- ==================== HERO BANNER ==================== -->
+    <div class="hero-banner">
+        <div class="hero-content">
+            <div class="hero-tag">✦ NOW STREAMING</div>
+            <h1 class="hero-title">Cyber<span class="neon">Anime</span></h1>
+            <p class="hero-desc">Nikmati ribuan anime & donghua favoritmu dengan kualitas terbaik. Streaming gratis, kapan saja, di mana saja.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="document.querySelector('.section-title').scrollIntoView({behavior:'smooth'})">
+                    <i class="fas fa-play"></i> Mulai Nonton
+                </button>
+                <button class="btn-secondary" onclick="filterByGenre('all')">
+                    <i class="fas fa-list"></i> Lihat Semua
+                </button>
+            </div>
+        </div>
+        <div class="hero-glow"></div>
+    </div>
+
+    <!-- ==================== KONTEN ==================== -->
+    <div class="container">
+
+        <!-- ==================== HALAMAN HOME ==================== -->
+        <div id="page-home" class="page active">
+
+            <!-- SECTION TITLE -->
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fas fa-fire"></i> Trending Sekarang
+                    <span class="section-badge">HOT</span>
+                </div>
+                <div class="section-nav">
+                    <button class="nav-dot active"></button>
+                    <button class="nav-dot"></button>
+                    <button class="nav-dot"></button>
+                </div>
+            </div>
+
+            <!-- GENRE FILTER -->
+            <div class="genre-filter">
+                <button class="genre-btn active" data-genre="all" onclick="filterByGenre('all')">Semua</button>
+                <button class="genre-btn" data-genre="action" onclick="filterByGenre('action')">Action</button>
+                <button class="genre-btn" data-genre="adventure" onclick="filterByGenre('adventure')">Adventure</button>
+                <button class="genre-btn" data-genre="comedy" onclick="filterByGenre('comedy')">Comedy</button>
+                <button class="genre-btn" data-genre="drama" onclick="filterByGenre('drama')">Drama</button>
+                <button class="genre-btn" data-genre="fantasy" onclick="filterByGenre('fantasy')">Fantasy</button>
+                <button class="genre-btn" data-genre="donghua" onclick="filterByGenre('donghua')">Donghua</button>
+                <button class="genre-btn" data-genre="romance" onclick="filterByGenre('romance')">Romance</button>
+                <button class="genre-btn" data-genre="shonen" onclick="filterByGenre('shonen')">Shonen</button>
+                <button class="genre-btn" data-genre="slice-of-life" onclick="filterByGenre('slice-of-life')">Slice</button>
+                <button class="genre-btn" data-genre="wuxia" onclick="filterByGenre('wuxia')">Wuxia</button>
+                <button class="genre-btn" data-genre="xianxia" onclick="filterByGenre('xianxia')">Xianxia</button>
+                <button class="genre-btn" data-genre="cultivation" onclick="filterByGenre('cultivation')">Cultivation</button>
+            </div>
+
+            <!-- GRID ANIME -->
+            <div id="animeGrid" class="anime-grid"></div>
+
+            <!-- PAGINATION -->
+            <div class="pagination">
+                <button id="prevPageBtn" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
+                <span id="pageInfo">Halaman 1 dari 1</span>
+                <button id="nextPageBtn" onclick="changePage(1)">Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- LOADING -->
+        <div id="globalLoader" class="loader" style="display:none;">
+            <i class="fas fa-spinner"></i>
+        </div>
+
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="neon">A</span>nime<span class="neon">S</span>tream
+                <span class="cyber-badge">✦ 2026</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy</a>
+                <a href="#">Contact</a>
+                <a href="#">DMCA</a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-discord"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 AnimeStream — Made with <i class="fas fa-heart neon"></i> for anime lovers</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+  </html>
