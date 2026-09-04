@@ -28,7 +28,6 @@
             min-height: 100vh;
         }
 
-        /* HEADER */
         header {
             background: rgba(10, 10, 15, 0.8);
             backdrop-filter: blur(20px);
@@ -79,7 +78,6 @@
         }
         .nav-links a:hover { color: var(--neon-purple); }
 
-        /* BREADCRUMB */
         .breadcrumb {
             display: flex;
             align-items: center;
@@ -98,7 +96,6 @@
         .breadcrumb i { font-size: 10px; color: rgba(255,255,255,0.1); }
         .breadcrumb span { color: var(--text-primary); font-weight: 600; }
 
-        /* KONTEN */
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
         .video-wrapper {
@@ -203,7 +200,6 @@
 
     <div class="container">
 
-        <!-- ★ BREADCRUMB NAVIGASI (TANPA TOMBOL KEMBALI) ★ -->
         <div class="breadcrumb">
             <a href="#" onclick="goHome()">Home</a>
             <i class="fas fa-chevron-right"></i>
@@ -238,16 +234,34 @@
         const episodeParam = urlParams.get('ep');
         const videoUrlParam = urlParams.get('url');
 
-        const episodeList = [
-            { number: 7, title: 'Tsuihou Sareta', url: 'https://ok.ru/videoembed/9912202562114' }
-        ];
+        // Episode list dari localStorage
+        let episodeList = [];
+        let animeTitle = '';
+
+        try {
+            const episodesData = localStorage.getItem('currentEpisodes');
+            if (episodesData) {
+                episodeList = JSON.parse(episodesData);
+            }
+            
+            const animeData = localStorage.getItem('currentAnime');
+            if (animeData) {
+                const anime = JSON.parse(animeData);
+                animeTitle = anime.title || 'Series';
+            }
+        } catch (e) {
+            console.error('Error parsing localStorage:', e);
+        }
+
+        console.log('📺 Watch page loaded');
+        console.log('📺 Episodes:', episodeList.length);
+        console.log('📺 Anime title:', animeTitle);
 
         let currentIndex = 0;
-        let currentAnimeTitle = '';
 
         function findEpisodeIndex(epNumber) {
             for (let i = 0; i < episodeList.length; i++) {
-                if (episodeList[i].number == epNumber) return i;
+                if (parseInt(episodeList[i].number) == parseInt(epNumber)) return i;
             }
             return 0;
         }
@@ -257,19 +271,25 @@
             const ep = episodeList[index];
             currentIndex = index;
 
+            // Update player
             document.getElementById('videoPlayer').src = ep.url;
-            document.getElementById('watchTitle').innerHTML = `Episode <span class="neon">${ep.number}</span> - ${ep.title}`;
+            
+            // Update title
+            const title = animeTitle || 'Series';
+            document.getElementById('watchTitle').innerHTML = `${title} Episode <span class="neon">${ep.number}</span>`;
+            
+            // Update counter
             document.getElementById('episodeCounter').textContent = `${index + 1} / ${episodeList.length}`;
+            
+            // Update buttons
             document.getElementById('prevBtn').disabled = (index <= 0);
             document.getElementById('nextBtn').disabled = (index >= episodeList.length - 1);
 
             // Update breadcrumb
-            const seriesName = document.getElementById('breadcrumbSeriesLink');
-            if (seriesName) {
-                seriesName.textContent = currentAnimeTitle || 'Series';
-            }
+            document.getElementById('breadcrumbSeriesLink').textContent = title;
             document.getElementById('breadcrumbEpisode').textContent = `Episode ${ep.number}`;
 
+            // Update URL
             const newUrl = `?anime=${animeFolder}&ep=${ep.number}&url=${encodeURIComponent(ep.url)}`;
             window.history.pushState({ path: newUrl }, '', newUrl);
         }
@@ -292,17 +312,7 @@
             }
         }
 
-        // Ambil judul anime dari localStorage atau URL
-        function getAnimeTitle() {
-            try {
-                const data = JSON.parse(localStorage.getItem('currentAnime'));
-                if (data && data.title) return data.title;
-            } catch (e) {}
-            return animeFolder.charAt(0).toUpperCase() + animeFolder.slice(1) || 'Series';
-        }
-
-        currentAnimeTitle = getAnimeTitle();
-
+        // Initialize
         if (episodeParam) {
             const idx = findEpisodeIndex(parseInt(episodeParam));
             loadEpisode(idx);
