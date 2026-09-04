@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naruto - Detail</title>
+    <title>AnimeStream - Detail</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
     <style>
@@ -319,7 +319,7 @@
             // Update breadcrumb
             breadcrumbTitle.textContent = anime.title;
 
-            // Render genres
+            // ★ RENDER GENRE (DENGAN trim) ★
             const genres = anime.genre ? anime.genre.split(',').map(g => `<span>${g.trim()}</span>`).join('') : '';
 
             // Render episode buttons
@@ -328,7 +328,7 @@
                 episodeButtons = episodes.map(ep => `
                     <div class="episode-btn" onclick="location.href='../watch.html?anime=${anime.id}&ep=${ep.number}&url=${ep.url}'">
                         <span class="ep-num">EP ${ep.number}</span>
-                        <span class="ep-title">${anime.title} Episode ${ep.number}</span>
+                        <span class="ep-title">${ep.title || anime.title + ' Episode ' + ep.number}</span>
                     </div>
                 `).join('');
             } else {
