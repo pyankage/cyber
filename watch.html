@@ -100,12 +100,22 @@
 
         .video-wrapper {
             background: #000;
-            border-radius: 16px;
             overflow: hidden;
             aspect-ratio: 16/9;
             width: 100%;
             border: var(--border-neon);
             position: relative;
+            /* CLIPPED CORNER: kiri atas + kanan bawah */
+            clip-path: polygon(
+                12px 0%,
+                100% 0%,
+                100% 0%,
+                100% calc(100% - 12px),
+                calc(100% - 12px) 100%,
+                0% 100%,
+                0% 100%,
+                0% 12px
+            );
         }
         .video-wrapper iframe { width: 100%; height: 100%; border: none; }
 
@@ -115,8 +125,18 @@
             padding: 20px;
             background: var(--bg-card);
             backdrop-filter: blur(10px);
-            border-radius: 16px;
             border: var(--border-neon);
+            /* CLIPPED CORNER: kiri atas + kanan bawah */
+            clip-path: polygon(
+                12px 0%,
+                100% 0%,
+                100% 0%,
+                100% calc(100% - 12px),
+                calc(100% - 12px) 100%,
+                0% 100%,
+                0% 100%,
+                0% 12px
+            );
         }
         .episode-info h2 {
             font-family: 'Orbitron', sans-serif;
@@ -140,13 +160,23 @@
             color: var(--text-primary);
             width: 44px;
             height: 44px;
-            border-radius: 50%;
             cursor: pointer;
             font-size: 18px;
             transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
+            /* CLIPPED CORNER: kiri atas + kanan bawah */
+            clip-path: polygon(
+                8px 0%,
+                100% 0%,
+                100% 0%,
+                100% calc(100% - 8px),
+                calc(100% - 8px) 100%,
+                0% 100%,
+                0% 100%,
+                0% 8px
+            );
         }
         .watch-nav button:hover:not(:disabled) {
             background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
